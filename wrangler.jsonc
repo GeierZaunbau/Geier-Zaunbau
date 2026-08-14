@@ -1,0 +1,11 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "geier-zaunbau",
+	"compatibility_date": "2026-08-13",
+	"main": "worker.js",
+	"assets": {
+		"directory": "./",
+		"binding": "ASSETS",
+		"not_found_handling": "404-page"
+	}
+}
