@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	var terminSelect = document.getElementById('calc-termin');
 	var notizField = document.getElementById('calc-notiz');
 	var priceEl = document.getElementById('calc-price');
+	var materialHinweis = document.getElementById('calc-material-hinweis');
 
 	function setupTiles(groupId, stateKey, onChange) {
 		var group = document.getElementById(groupId);
@@ -62,12 +63,14 @@ document.addEventListener('DOMContentLoaded', function () {
 			streichserviceRow.hidden = false;
 			fundamentRow.hidden = true;
 			abstandRow.hidden = true;
+			materialHinweis.hidden = true;
 			state.pfostenabstand = 2.5;
 		} else {
 			hoeheRow.hidden = false;
 			hoeheBetonRow.hidden = true;
 			streichserviceRow.hidden = true;
 			fundamentRow.hidden = false;
+			materialHinweis.hidden = false;
 			if (state.zauntyp === 'wpc') {
 				abstandRow.hidden = false;
 				state.pfostenabstand = Number(abstandSelect.value);

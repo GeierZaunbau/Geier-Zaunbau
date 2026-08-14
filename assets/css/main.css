@@ -24,6 +24,8 @@
    Reset & Base
    ============================================ */
 *, *::before, *::after { box-sizing: border-box; }
+/* Stellt sicher, dass [hidden] immer gewinnt, auch bei eigenen display:flex/grid-Klassen */
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body {
 	margin: 0;
