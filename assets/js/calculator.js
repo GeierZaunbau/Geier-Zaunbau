@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		zauntyp: 'dsm',
 		laenge: 20,
 		hoehe: 120,
+		hoeheBeton: 200,
+		ausfuehrung: 'einseitig',
+		streichservice: false,
 		pfostenabstand: 2.5,
 		fundamentArt: 'beton',
 		torTyp: 'keins',
@@ -17,7 +20,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	var laengeInput = document.getElementById('calc-laenge');
 	var laengeValue = document.getElementById('calc-laenge-value');
+	var hoeheRow = document.getElementById('calc-hoehe-row');
 	var hoeheSelect = document.getElementById('calc-hoehe');
+	var hoeheBetonRow = document.getElementById('calc-hoehe-beton-row');
+	var ausfuehrungRow = document.getElementById('calc-ausfuehrung-row');
+	var streichserviceRow = document.getElementById('calc-streichservice-row');
+	var streichserviceBox = document.getElementById('calc-streichservice');
+	var fundamentRow = document.getElementById('calc-fundament-row');
 	var abstandRow = document.getElementById('calc-abstand-row');
 	var abstandSelect = document.getElementById('calc-abstand');
 	var torSelect = document.getElementById('calc-tor');
@@ -31,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	var priceEl = document.getElementById('calc-price');
 	var svg = document.getElementById('calc-svg');
 
-	function setupTiles(groupId, stateKey) {
+	function setupTiles(groupId, stateKey, onChange) {
 		var group = document.getElementById(groupId);
 		if (!group) return;
 		group.querySelectorAll('.ggg-calc__tile').forEach(function (tile) {
@@ -43,24 +52,49 @@ document.addEventListener('DOMContentLoaded', function () {
 				tile.classList.add('is-active');
 				tile.setAttribute('aria-checked', 'true');
 				state[stateKey] = tile.getAttribute('data-value');
-				if (stateKey === 'zauntyp') {
-					if (state.zauntyp === 'wpc') {
-						abstandRow.hidden = false;
-						state.pfostenabstand = Number(abstandSelect.value);
-					} else {
-						abstandRow.hidden = true;
-						state.pfostenabstand = 2.5;
-					}
-				}
+				if (onChange) onChange();
 				triggerUpdate();
 			});
 		});
 	}
-	setupTiles('calc-zauntyp', 'zauntyp');
+
+	function updateZauntypVisibility() {
+		if (state.zauntyp === 'beton') {
+			hoeheRow.hidden = true;
+			hoeheBetonRow.hidden = false;
+			ausfuehrungRow.hidden = false;
+			streichserviceRow.hidden = false;
+			fundamentRow.hidden = true;
+			abstandRow.hidden = true;
+			state.pfostenabstand = 2.5;
+		} else {
+			hoeheRow.hidden = false;
+			hoeheBetonRow.hidden = true;
+			ausfuehrungRow.hidden = true;
+			streichserviceRow.hidden = true;
+			fundamentRow.hidden = false;
+			if (state.zauntyp === 'wpc') {
+				abstandRow.hidden = false;
+				state.pfostenabstand = Number(abstandSelect.value);
+			} else {
+				abstandRow.hidden = true;
+				state.pfostenabstand = 2.5;
+			}
+		}
+	}
+
+	setupTiles('calc-zauntyp', 'zauntyp', updateZauntypVisibility);
 	setupTiles('calc-fundament', 'fundamentArt');
+	setupTiles('calc-hoehe-beton', 'hoeheBeton');
+	setupTiles('calc-ausfuehrung', 'ausfuehrung');
 
 	abstandSelect.addEventListener('change', function () {
 		state.pfostenabstand = Number(abstandSelect.value);
+		triggerUpdate();
+	});
+
+	streichserviceBox.addEventListener('change', function () {
+		state.streichservice = streichserviceBox.checked;
 		triggerUpdate();
 	});
 
@@ -100,7 +134,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	});
 
 	function drawSketch() {
-		var hoeheScale = Math.max(0.4, Math.min(1, state.hoehe / 200));
+		var effektiveHoehe = state.zauntyp === 'beton' ? Number(state.hoeheBeton) : state.hoehe;
+		var hoeheScale = Math.max(0.4, Math.min(1, effektiveHoehe / 200));
 		var fenceTop = 120 - 90 * hoeheScale;
 		var postCount = state.laenge > 40 ? 7 : state.laenge > 15 ? 5 : 3;
 		var spacing = 300 / (postCount - 1);
@@ -129,10 +164,14 @@ document.addEventListener('DOMContentLoaded', function () {
 	function fetchPrice() {
 		priceEl.textContent = 'Preis wird berechnet …';
 		priceEl.style.opacity = '0.6';
+		var payload = Object.assign({}, state);
+		if (state.zauntyp === 'beton') {
+			payload.hoehe = state.hoeheBeton;
+		}
 		fetch('/api/calculate', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(state),
+			body: JSON.stringify(payload),
 		})
 			.then(function (res) { return res.json(); })
 			.then(function (data) {
@@ -147,10 +186,17 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 	}
 
-	var zauntypLabels = { dsm: 'Doppelstabmattenzaun', maschendraht: 'Maschendrahtzaun', wpc: 'WPC-Sichtschutzzaun' };
+	var zauntypLabels = { dsm: 'Doppelstabmattenzaun', maschendraht: 'Maschendrahtzaun', wpc: 'WPC-Sichtschutzzaun', beton: 'Betonzaun' };
 	var fundamentLabels = { beton: 'Punktfundament (Beton)', duebeln: 'Dübeln auf vorhandenem Fundament', einrammen: 'Einrammen (Bodenhülse)' };
-	var torLabels = { keins: 'kein Tor', einfluegelig: 'einflügeliges Tor', zweifluegelig: 'zweiflügeliges Tor' };
+	var torLabels = {
+		keins: 'kein Tor',
+		gartentor_ein: 'Gartentor, einflügelig',
+		gartentor_zwei: 'Gartentor, zweiflügelig',
+		fluegeltor_ein: 'Flügeltor, einflügelig',
+		fluegeltor_zwei: 'Flügeltor, zweiflügelig',
+	};
 	var gelaendeLabels = { normal: 'normales, ebenes Gelände', hang: 'Hanglage', schwer: 'schwer zugängliches Gelände' };
+	var ausfuehrungLabels = { einseitig: 'einseitig', beidseitig: 'beidseitig' };
 
 	var anfragenBtn = document.getElementById('calc-anfragen');
 	anfragenBtn.addEventListener('click', function () {
@@ -159,18 +205,26 @@ document.addEventListener('DOMContentLoaded', function () {
 		lines.push('');
 		lines.push('Zauntyp: ' + zauntypLabels[state.zauntyp]);
 		lines.push('Länge: ' + state.laenge + ' m');
-		lines.push('Höhe: ' + state.hoehe + ' cm');
-		if (state.zauntyp === 'wpc') {
-			lines.push('Pfostenabstand: ' + state.pfostenabstand.toString().replace('.', ',') + ' m');
+
+		if (state.zauntyp === 'beton') {
+			lines.push('Höhe: ' + (state.hoeheBeton === '240' || state.hoeheBeton === 240 ? '2,40 m' : 'bis 2,00 m'));
+			lines.push('Ausführung: ' + ausfuehrungLabels[state.ausfuehrung]);
+			lines.push('Streichservice: ' + (state.streichservice ? 'ja' : 'nein'));
+		} else {
+			lines.push('Höhe: ' + state.hoehe + ' cm');
+			if (state.zauntyp === 'wpc') {
+				lines.push('Pfostenabstand: ' + state.pfostenabstand.toString().replace('.', ',') + ' m');
+			}
+			lines.push('Befestigung: ' + fundamentLabels[state.fundamentArt]);
 		}
-		lines.push('Befestigung: ' + fundamentLabels[state.fundamentArt]);
+
 		lines.push('Tor: ' + torLabels[state.torTyp]);
 		lines.push('Gelände: ' + gelaendeLabels[state.gelaende]);
 		lines.push('Demontage Altzaun: ' + (state.demontage ? 'ja' : 'nein'));
 		if (state.demontage) {
 			lines.push('Entsorgung Altmaterial: ' + (state.entsorgung ? 'ja' : 'nein'));
 		}
-		lines.push('Entfernung von Birkenfeld: ca. ' + state.entfernungKm + ' km');
+		if (state.entfernungKm) lines.push('Entfernung von Birkenfeld: ca. ' + state.entfernungKm + ' km');
 		if (terminSelect.value) lines.push('Wunschtermin: ' + terminSelect.value);
 		if (lastResult) lines.push('Geschätzte Preisspanne: ' + lastResult.preisVon + ' € bis ' + lastResult.preisBis + ' €');
 		if (notizField.value.trim()) {

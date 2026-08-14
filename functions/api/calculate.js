@@ -9,16 +9,23 @@ const MONTAGE_RATES = {
 	wpc: { min: 50, max: 90 },
 };
 
+// Materialrechnung Punktfundament (Beton):
+// Loch 30x30x80cm, davon 10cm Kies-Drainage + 70cm Setz-Fix, inkl. 8% Verschnitt
+// Kies: 9L netto -> 1 Sack (25kg, ca. 16L) x 3,69€ = 3,69€
+// Setz-Fix: 63L netto -> 6 Säcke (25kg, 13L Ergiebigkeit) x 8,99€ = 53,94€
+const FUNDAMENT_BETON_PRO_PFOSTEN = 57.63;
+
 const FUNDAMENT_RATES = {
-	beton: { min: 20, max: 40 },
 	duebeln: { min: 10, max: 20 },
 	einrammen: { min: 15, max: 25 },
 };
 
 const TOR_PREISE = {
 	keins: 0,
-	einfluegelig: 150,
-	zweifluegelig: 200,
+	gartentor_ein: 150,
+	gartentor_zwei: 200,
+	fluegeltor_ein: 180,
+	fluegeltor_zwei: 200,
 };
 
 const GELAENDE_FAKTOR = {
@@ -38,6 +45,14 @@ const MATTENBREITE_ERLAUBT_WPC = [1.8, 2.5]; // Meter, wählbare Pfostenabständ
 const HOEHE_FUNDAMENT_SCHWELLE = 150; // cm
 const HOEHE_FUNDAMENT_AUFSCHLAG = 1.2;
 
+// Betonzaun: Material + Montage + Fundament sind hier bereits im Meterpreis enthalten
+const BETONZAUN_RATES = {
+	einseitig: { bis2m: 80, m240: 110 },
+	beidseitig: { bis2m: 100, m240: 115 },
+};
+const BETONZAUN_STREICHSERVICE_PRO_METER = 26;
+const BETONZAUN_PUFFER = 0.08; // 8% Spanne nach oben/unten, da Meterpreis sonst exakt fix wäre
+
 function clamp(value, min, max) {
 	return Math.min(Math.max(value, min), max);
 }
@@ -52,20 +67,62 @@ export async function onRequestPost(context) {
 
 		const zauntyp = body.zauntyp;
 		const laenge = clamp(Number(body.laenge) || 0, 1, 500);
-		const hoehe = clamp(Number(body.hoehe) || 120, 60, 250);
-		const fundamentArt = body.fundamentArt || 'beton';
 		const torTyp = body.torTyp || 'keins';
 		const gelaende = body.gelaende || 'normal';
 		const demontage = !!body.demontage;
 		const entsorgung = demontage && !!body.entsorgung;
 		const entfernungKm = clamp(Number(body.entfernungKm) || 0, 0, 200);
+		const torPreis = TOR_PREISE[torTyp] || 0;
+		const anfahrt = ANFAHRT_PAUSCHALE + entfernungKm * ANFAHRT_PRO_KM;
+		const gFaktor = GELAENDE_FAKTOR[gelaende] || 1.0;
 
+		let demontageMin = 0;
+		let demontageMax = 0;
+		if (demontage) {
+			demontageMin = laenge * DEMONTAGE_RATE.min;
+			demontageMax = laenge * DEMONTAGE_RATE.max;
+		}
+		let entsorgungMin = 0;
+		let entsorgungMax = 0;
+		if (entsorgung) {
+			entsorgungMin = laenge * ENTSORGUNG_RATE.min;
+			entsorgungMax = laenge * ENTSORGUNG_RATE.max;
+		}
+
+		// --- Betonzaun: eigener Rechenweg, da Meterpreis bereits alles enthält ---
+		if (zauntyp === 'beton') {
+			const ausfuehrung = body.ausfuehrung === 'beidseitig' ? 'beidseitig' : 'einseitig';
+			const hoeheKey = Number(body.hoehe) >= 240 ? 'm240' : 'bis2m';
+			const meterpreis = BETONZAUN_RATES[ausfuehrung][hoeheKey];
+
+			let subtotal = laenge * meterpreis;
+			if (body.streichservice) {
+				subtotal += laenge * BETONZAUN_STREICHSERVICE_PRO_METER;
+			}
+			subtotal = subtotal * gFaktor;
+			subtotal += demontageMin + entsorgungMin;
+
+			const gesamt = subtotal + torPreis + anfahrt;
+			let totalMin = round50(gesamt * (1 - BETONZAUN_PUFFER));
+			let totalMax = round50(gesamt * (1 + BETONZAUN_PUFFER));
+			if (totalMax <= totalMin) totalMax = totalMin + 100;
+
+			return new Response(
+				JSON.stringify({ preisVon: totalMin, preisBis: totalMax, pfostenAnzahl: null }),
+				{ headers: { 'Content-Type': 'application/json' } }
+			);
+		}
+
+		// --- Alle anderen Zauntypen: Montage + separates Fundament ---
 		if (!MONTAGE_RATES[zauntyp]) {
 			return new Response(JSON.stringify({ error: 'Unbekannter Zauntyp' }), {
 				status: 400,
 				headers: { 'Content-Type': 'application/json' },
 			});
 		}
+
+		const hoehe = clamp(Number(body.hoehe) || 120, 60, 250);
+		const fundamentArt = body.fundamentArt || 'beton';
 
 		const montageRate = MONTAGE_RATES[zauntyp];
 		let montageMin = laenge * montageRate.min;
@@ -77,36 +134,23 @@ export async function onRequestPost(context) {
 			pfostenabstand = MATTENBREITE_ERLAUBT_WPC.includes(angefragterAbstand) ? angefragterAbstand : 1.8;
 		}
 		const pfostenAnzahl = Math.ceil(laenge / pfostenabstand) + 1;
-		const fundRate = FUNDAMENT_RATES[fundamentArt] || FUNDAMENT_RATES.beton;
-		let fundMin = pfostenAnzahl * fundRate.min;
-		let fundMax = pfostenAnzahl * fundRate.max;
+
+		let fundMin, fundMax;
+		if (fundamentArt === 'beton') {
+			fundMin = fundMax = pfostenAnzahl * FUNDAMENT_BETON_PRO_PFOSTEN;
+		} else {
+			const fundRate = FUNDAMENT_RATES[fundamentArt] || FUNDAMENT_RATES.duebeln;
+			fundMin = pfostenAnzahl * fundRate.min;
+			fundMax = pfostenAnzahl * fundRate.max;
+		}
 
 		if (hoehe > HOEHE_FUNDAMENT_SCHWELLE) {
 			fundMin *= HOEHE_FUNDAMENT_AUFSCHLAG;
 			fundMax *= HOEHE_FUNDAMENT_AUFSCHLAG;
 		}
 
-		let demontageMin = 0;
-		let demontageMax = 0;
-		if (demontage) {
-			demontageMin = laenge * DEMONTAGE_RATE.min;
-			demontageMax = laenge * DEMONTAGE_RATE.max;
-		}
-
-		let entsorgungMin = 0;
-		let entsorgungMax = 0;
-		if (entsorgung) {
-			entsorgungMin = laenge * ENTSORGUNG_RATE.min;
-			entsorgungMax = laenge * ENTSORGUNG_RATE.max;
-		}
-
-		const gFaktor = GELAENDE_FAKTOR[gelaende] || 1.0;
-
 		let subtotalMin = (montageMin + fundMin + demontageMin + entsorgungMin) * gFaktor;
 		let subtotalMax = (montageMax + fundMax + demontageMax + entsorgungMax) * gFaktor;
-
-		const torPreis = TOR_PREISE[torTyp] || 0;
-		const anfahrt = ANFAHRT_PAUSCHALE + entfernungKm * ANFAHRT_PRO_KM;
 
 		let totalMin = subtotalMin + torPreis + anfahrt;
 		let totalMax = subtotalMax + torPreis + anfahrt;
@@ -119,11 +163,7 @@ export async function onRequestPost(context) {
 		}
 
 		return new Response(
-			JSON.stringify({
-				preisVon: totalMin,
-				preisBis: totalMax,
-				pfostenAnzahl,
-			}),
+			JSON.stringify({ preisVon: totalMin, preisBis: totalMax, pfostenAnzahl }),
 			{ headers: { 'Content-Type': 'application/json' } }
 		);
 	} catch (err) {
