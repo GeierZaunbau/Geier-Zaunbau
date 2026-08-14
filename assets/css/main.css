@@ -502,10 +502,10 @@ p { margin: 0 0 1em; }
 	background: var(--ggg-bg-alt);
 	border: 1px solid rgba(138, 130, 114, 0.25);
 	border-radius: var(--ggg-radius);
-	padding: 28px;
+	padding: 24px;
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 16px;
 }
 .ggg-calc__group { display: flex; flex-direction: column; gap: 8px; }
 .ggg-calc__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -530,6 +530,8 @@ p { margin: 0 0 1em; }
 	color: var(--ggg-bg-darker);
 	font-weight: 600;
 }
+.ggg-calc__tile--check { display: inline-flex; align-items: center; gap: 8px; }
+.ggg-calc__tile--check input { position: absolute; opacity: 0; width: 0; height: 0; }
 
 .ggg-calc input[type="range"] {
 	width: 100%;
@@ -566,8 +568,6 @@ p { margin: 0 0 1em; }
 	top: 90px;
 	text-align: center;
 }
-.ggg-calc__sketch { margin-bottom: 20px; }
-.ggg-calc__sketch svg { width: 100%; height: auto; }
 .ggg-calc__price-label { font-family: var(--ggg-font-mono); font-size: 0.78rem; color: var(--ggg-stone); margin-bottom: 4px; }
 .ggg-calc__price {
 	font-family: var(--ggg-font-display);

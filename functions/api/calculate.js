@@ -21,7 +21,6 @@ const FUNDAMENT_RATES = {
 };
 
 const TOR_PREISE = {
-	keins: 0,
 	gartentor_ein: 150,
 	gartentor_zwei: 200,
 	fluegeltor_ein: 180,
@@ -67,12 +66,16 @@ export async function onRequestPost(context) {
 
 		const zauntyp = body.zauntyp;
 		const laenge = clamp(Number(body.laenge) || 0, 1, 500);
-		const torTyp = body.torTyp || 'keins';
 		const gelaende = body.gelaende || 'normal';
 		const demontage = !!body.demontage;
 		const entsorgung = demontage && !!body.entsorgung;
 		const entfernungKm = clamp(Number(body.entfernungKm) || 0, 0, 200);
-		const torPreis = TOR_PREISE[torTyp] || 0;
+
+		const toreListe = Array.isArray(body.tore) ? body.tore : [];
+		const torPreis = toreListe.reduce(function (summe, key) {
+			return summe + (TOR_PREISE[key] || 0);
+		}, 0);
+
 		const anfahrt = ANFAHRT_PAUSCHALE + entfernungKm * ANFAHRT_PRO_KM;
 		const gFaktor = GELAENDE_FAKTOR[gelaende] || 1.0;
 

@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/images/favicon-180.png">
 <link rel="stylesheet" href="assets/css/fonts.css?v=2">
-<link rel="stylesheet" href="assets/css/main.css?v=6">
+<link rel="stylesheet" href="assets/css/main.css?v=7">
 <script type="application/ld+json">
 {
 	"@context": "https://schema.org",
@@ -151,44 +151,46 @@
 						<input type="range" id="calc-laenge" min="5" max="100" step="1" value="20">
 					</div>
 
-					<div class="ggg-calc__group" id="calc-hoehe-row">
-						<label class="ggg-calc__label" for="calc-hoehe">Höhe</label>
-						<select id="calc-hoehe">
-							<option value="80">80 cm</option>
-							<option value="100">100 cm</option>
-							<option value="120" selected>120 cm</option>
-							<option value="150">150 cm</option>
-							<option value="180">180 cm</option>
-							<option value="200">200 cm</option>
-						</select>
-					</div>
-
-					<div class="ggg-calc__group" id="calc-hoehe-beton-row" hidden>
-						<label class="ggg-calc__label">Höhe</label>
-						<div class="ggg-calc__tiles" id="calc-hoehe-beton" role="radiogroup">
-							<button type="button" class="ggg-calc__tile is-active" data-value="200" role="radio" aria-checked="true">bis 2,00 m</button>
-							<button type="button" class="ggg-calc__tile" data-value="240" role="radio" aria-checked="false">2,40 m</button>
+					<div class="ggg-calc__row">
+						<div class="ggg-calc__group" id="calc-hoehe-row">
+							<label class="ggg-calc__label" for="calc-hoehe">Höhe</label>
+							<select id="calc-hoehe">
+								<option value="80">80 cm</option>
+								<option value="100">100 cm</option>
+								<option value="120" selected>120 cm</option>
+								<option value="150">150 cm</option>
+								<option value="180">180 cm</option>
+								<option value="200">200 cm</option>
+							</select>
+						</div>
+						<div class="ggg-calc__group" id="calc-abstand-row" hidden>
+							<label class="ggg-calc__label" for="calc-abstand">Pfostenabstand</label>
+							<select id="calc-abstand">
+								<option value="1.8">1,80 m (üblich bei WPC)</option>
+								<option value="2.5">2,50 m (Standard)</option>
+							</select>
 						</div>
 					</div>
 
-					<div class="ggg-calc__group" id="calc-ausfuehrung-row" hidden>
-						<label class="ggg-calc__label">Ausführung</label>
-						<div class="ggg-calc__tiles" id="calc-ausfuehrung" role="radiogroup">
-							<button type="button" class="ggg-calc__tile is-active" data-value="einseitig" role="radio" aria-checked="true">Einseitig</button>
-							<button type="button" class="ggg-calc__tile" data-value="beidseitig" role="radio" aria-checked="false">Beidseitig</button>
+					<div class="ggg-calc__row" id="calc-hoehe-beton-row" hidden>
+						<div class="ggg-calc__group">
+							<label class="ggg-calc__label">Höhe</label>
+							<div class="ggg-calc__tiles" id="calc-hoehe-beton" role="radiogroup">
+								<button type="button" class="ggg-calc__tile is-active" data-value="200" role="radio" aria-checked="true">bis 2,00 m</button>
+								<button type="button" class="ggg-calc__tile" data-value="240" role="radio" aria-checked="false">2,40 m</button>
+							</div>
+						</div>
+						<div class="ggg-calc__group" id="calc-ausfuehrung-row">
+							<label class="ggg-calc__label">Ausführung</label>
+							<div class="ggg-calc__tiles" id="calc-ausfuehrung" role="radiogroup">
+								<button type="button" class="ggg-calc__tile is-active" data-value="einseitig" role="radio" aria-checked="true">Einseitig</button>
+								<button type="button" class="ggg-calc__tile" data-value="beidseitig" role="radio" aria-checked="false">Beidseitig</button>
+							</div>
 						</div>
 					</div>
 
 					<div class="ggg-calc__group" id="calc-streichservice-row" hidden>
 						<label class="ggg-calc__checkbox"><input type="checkbox" id="calc-streichservice"> Streichservice (34 Farbtöne, Grundierung inklusive)</label>
-					</div>
-
-					<div class="ggg-calc__group" id="calc-abstand-row" hidden>
-						<label class="ggg-calc__label" for="calc-abstand">Pfostenabstand</label>
-						<select id="calc-abstand">
-							<option value="1.8">1,80 m (engere Pfosten, üblich bei WPC)</option>
-							<option value="2.5">2,50 m (Standardabstand)</option>
-						</select>
 					</div>
 
 					<div class="ggg-calc__group" id="calc-fundament-row">
@@ -200,17 +202,17 @@
 						</div>
 					</div>
 
-					<div class="ggg-calc__row">
-						<div class="ggg-calc__group">
-							<label class="ggg-calc__label" for="calc-tor">Tor</label>
-							<select id="calc-tor">
-								<option value="keins">Kein Tor</option>
-								<option value="gartentor_ein">Gartentor, einflügelig</option>
-								<option value="gartentor_zwei">Gartentor, zweiflügelig</option>
-								<option value="fluegeltor_ein">Flügeltor, einflügelig</option>
-								<option value="fluegeltor_zwei">Flügeltor, zweiflügelig</option>
-							</select>
+					<div class="ggg-calc__group">
+						<label class="ggg-calc__label">Tor (Mehrfachauswahl möglich)</label>
+						<div class="ggg-calc__tiles" id="calc-tor">
+							<label class="ggg-calc__tile ggg-calc__tile--check"><input type="checkbox" data-value="gartentor_ein">Gartentor, einflügelig</label>
+							<label class="ggg-calc__tile ggg-calc__tile--check"><input type="checkbox" data-value="gartentor_zwei">Gartentor, zweiflügelig</label>
+							<label class="ggg-calc__tile ggg-calc__tile--check"><input type="checkbox" data-value="fluegeltor_ein">Flügeltor, einflügelig</label>
+							<label class="ggg-calc__tile ggg-calc__tile--check"><input type="checkbox" data-value="fluegeltor_zwei">Flügeltor, zweiflügelig</label>
 						</div>
+					</div>
+
+					<div class="ggg-calc__row">
 						<div class="ggg-calc__group">
 							<label class="ggg-calc__label" for="calc-gelaende">Gelände</label>
 							<select id="calc-gelaende">
@@ -219,19 +221,17 @@
 								<option value="schwer">Schwer zugänglich</option>
 							</select>
 						</div>
-					</div>
-
-					<div class="ggg-calc__group">
-						<label class="ggg-calc__checkbox"><input type="checkbox" id="calc-demontage"> Alten Zaun demontieren</label>
-						<label class="ggg-calc__checkbox" id="calc-entsorgung-row" hidden><input type="checkbox" id="calc-entsorgung"> Altmaterial entsorgen</label>
-					</div>
-
-					<div class="ggg-calc__group">
-						<label class="ggg-calc__label" for="calc-entfernung">Entfernung von Birkenfeld (km, optional/ungefähr)</label>
-						<input type="number" id="calc-entfernung" min="0" max="200" value="10">
+						<div class="ggg-calc__group">
+							<label class="ggg-calc__label" for="calc-entfernung">Entfernung Birkenfeld (km, optional)</label>
+							<input type="number" id="calc-entfernung" min="0" max="200" value="10">
+						</div>
 					</div>
 
 					<div class="ggg-calc__row">
+						<div class="ggg-calc__group">
+							<label class="ggg-calc__checkbox"><input type="checkbox" id="calc-demontage"> Alten Zaun demontieren</label>
+							<label class="ggg-calc__checkbox" id="calc-entsorgung-row" hidden><input type="checkbox" id="calc-entsorgung"> Altmaterial entsorgen</label>
+						</div>
 						<div class="ggg-calc__group">
 							<label class="ggg-calc__label" for="calc-termin">Wunschtermin (optional)</label>
 							<select id="calc-termin">
@@ -250,12 +250,6 @@
 				</div>
 
 				<div class="ggg-calc__result">
-					<div class="ggg-calc__sketch" aria-hidden="true">
-						<svg id="calc-svg" viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg">
-							<line x1="10" y1="120" x2="310" y2="120" stroke="var(--ggg-stone)" stroke-width="2"/>
-						</svg>
-					</div>
-
 					<p class="ggg-calc__price-label">Ihre geschätzte Preisspanne</p>
 					<p class="ggg-calc__price" id="calc-price">Preis wird berechnet …</p>
 					<p class="ggg-calc__disclaimer">Unverbindliche Schätzung. Der genaue Festpreis steht nach der kostenlosen Vor-Ort-Beratung fest.</p>
@@ -460,8 +454,8 @@
 	<p class="ggg-footer__copy">© 2026 Geier Grund &amp; Grenze, Zaunbau &amp; Gartenservice in Birkenfeld</p>
 </footer>
 
-<script src="assets/js/main.js?v=6"></script>
-<script src="assets/js/calculator.js?v=4"></script>
+<script src="assets/js/main.js?v=7"></script>
+<script src="assets/js/calculator.js?v=5"></script>
 <script>
 	// Formspree AJAX-Versand, damit die Erfolgsmeldung ohne Seiten-Neuladen erscheint
 	var form = document.getElementById('ggg-contact-form');
