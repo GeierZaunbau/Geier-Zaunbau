@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	var state = {
 		zauntyp: 'dsm',
 		laenge: 20,
-		hoehe: 120,
+		hoehe: 200,
 		hoeheBeton: 200,
 		ausfuehrung: 'einseitig',
 		streichservice: false,
@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	var laengeInput = document.getElementById('calc-laenge');
 	var laengeValue = document.getElementById('calc-laenge-value');
 	var hoeheRow = document.getElementById('calc-hoehe-row');
-	var hoeheSelect = document.getElementById('calc-hoehe');
 	var hoeheBetonRow = document.getElementById('calc-hoehe-beton-row');
 	var streichserviceRow = document.getElementById('calc-streichservice-row');
 	var streichserviceBox = document.getElementById('calc-streichservice');
@@ -119,10 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		laengeValue.textContent = state.laenge;
 		triggerUpdate();
 	});
-	hoeheSelect.addEventListener('change', function () {
-		state.hoehe = Number(hoeheSelect.value);
-		triggerUpdate();
-	});
 	gelaendeSelect.addEventListener('change', function () {
 		state.gelaende = gelaendeSelect.value;
 		triggerUpdate();
@@ -202,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			lines.push('Ausführung: ' + ausfuehrungLabels[state.ausfuehrung]);
 			lines.push('Streichservice: ' + (state.streichservice ? 'ja' : 'nein'));
 		} else {
-			lines.push('Höhe: ' + state.hoehe + ' cm');
+			lines.push('Höhe: bis 2 Meter');
 			if (state.zauntyp === 'wpc') {
 				lines.push('Pfostenabstand: ' + state.pfostenabstand.toString().replace('.', ',') + ' m');
 			}

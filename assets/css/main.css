@@ -510,6 +510,7 @@ p { margin: 0 0 1em; }
 .ggg-calc__group { display: flex; flex-direction: column; gap: 8px; }
 .ggg-calc__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .ggg-calc__label { font-size: 0.85rem; color: var(--ggg-cream-dim); font-family: var(--ggg-font-mono); }
+.ggg-calc__hint { font-size: 0.88rem; color: var(--ggg-cream-dim); padding: 10px 12px; background: var(--ggg-bg-darker); border: 1px solid rgba(138, 130, 114, 0.3); border-radius: var(--ggg-radius); margin: 0; }
 
 .ggg-calc__tiles { display: flex; gap: 8px; flex-wrap: wrap; }
 .ggg-calc__tile {
