@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	var streichserviceBox = document.getElementById('calc-streichservice');
 	var fundamentRow = document.getElementById('calc-fundament-row');
 	var abstandRow = document.getElementById('calc-abstand-row');
+	var abstandHintRow = document.getElementById('calc-abstand-hint-row');
 	var abstandSelect = document.getElementById('calc-abstand');
 	var torGroup = document.getElementById('calc-tor');
 	var gelaendeSelect = document.getElementById('calc-gelaende');
@@ -63,6 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			streichserviceRow.hidden = false;
 			fundamentRow.hidden = true;
 			abstandRow.hidden = true;
+			abstandHintRow.hidden = true;
 			materialHinweis.hidden = true;
 			state.pfostenabstand = 2.5;
 		} else {
@@ -73,9 +75,11 @@ document.addEventListener('DOMContentLoaded', function () {
 			materialHinweis.hidden = false;
 			if (state.zauntyp === 'wpc') {
 				abstandRow.hidden = false;
+				abstandHintRow.hidden = true;
 				state.pfostenabstand = Number(abstandSelect.value);
 			} else {
 				abstandRow.hidden = true;
+				abstandHintRow.hidden = false;
 				state.pfostenabstand = 2.5;
 			}
 		}

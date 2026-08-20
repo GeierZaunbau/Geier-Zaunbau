@@ -54,4 +54,33 @@ document.addEventListener('DOMContentLoaded', function () {
 	} else {
 		revealEls.forEach(function (el) { el.classList.add('is-visible'); });
 	}
+
+	// Lightbox: Projektbilder per Klick vergrößern
+	var lightbox = document.getElementById('ggg-lightbox');
+	var lightboxImg = document.getElementById('ggg-lightbox-img');
+	var lightboxClose = document.getElementById('ggg-lightbox-close');
+
+	function openLightbox(src, alt) {
+		lightboxImg.src = src;
+		lightboxImg.alt = alt || '';
+		lightbox.hidden = false;
+	}
+	function closeLightbox() {
+		lightbox.hidden = true;
+		lightboxImg.src = '';
+	}
+
+	document.querySelectorAll('.ggg-project__img, .ggg-project__split img').forEach(function (img) {
+		img.addEventListener('click', function () {
+			openLightbox(img.src, img.alt);
+		});
+	});
+	lightbox.addEventListener('click', closeLightbox);
+	lightboxClose.addEventListener('click', function (e) {
+		e.stopPropagation();
+		closeLightbox();
+	});
+	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+	});
 });
