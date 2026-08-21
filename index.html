@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
 <link rel="apple-touch-icon" href="assets/images/favicon-180.png">
 <link rel="stylesheet" href="assets/css/fonts.css?v=2">
-<link rel="stylesheet" href="assets/css/main.css?v=13">
+<link rel="stylesheet" href="assets/css/main.css?v=14">
 <script type="application/ld+json">
 {
 	"@context": "https://schema.org",
@@ -53,7 +53,7 @@
 
 		<nav class="ggg-nav" aria-label="Hauptnavigation">
 			<a href="#leistungen">Leistungen</a>
-			<a href="#rechner">Traumrechner</a>
+			<a href="#rechner">Montagerechner</a>
 			<a href="#ablauf">Ablauf</a>
 			<a href="#gebiet">Einzugsgebiet</a>
 			<a href="#faq">Fragen</a>
@@ -80,7 +80,7 @@
 		<div class="ggg-wrap ggg-hero__inner">
 			<p class="ggg-eyebrow">Zaunbau &amp; Gartenservice in Birkenfeld, Rheinland-Pfalz</p>
 			<h1 class="ggg-hero__title">Zaunbauer in Birkenfeld.<br>Grenzen, die halten.</h1>
-			<p class="ggg-hero__sub">Zaunbau, Zaunmontage und Sanierung aus einer Hand. Solide gebaut, fair kalkuliert, ohne böse Überraschungen auf der Rechnung.</p>
+			<p class="ggg-hero__sub">Zaunbau, Zaunmontage und Sanierung aus einer Hand. Solide gebaut, fair kalkuliert, mit Preisen, auf die Sie sich verlassen können.</p>
 
 			<div class="ggg-hero__cta">
 				<a class="ggg-btn ggg-btn--solid ggg-btn--lg" href="#kontakt">Kostenlose Vor-Ort-Beratung anfragen</a>
@@ -208,7 +208,7 @@
 	<section id="rechner" class="ggg-section ggg-section--alt">
 		<div class="ggg-wrap">
 			<p class="ggg-eyebrow ggg-reveal">Einzigartig in der Region</p>
-			<h2 class="ggg-h2 ggg-reveal">Traumrechner</h2>
+			<h2 class="ggg-h2 ggg-reveal">Montagerechner</h2>
 			<p class="ggg-note ggg-reveal">Einfach Ihr Projekt einstellen. Sie sehen die Preisspanne sofort, live, ohne Klick auf einen Berechnen-Knopf und ohne dass Sie uns vorher etwas schicken müssen.</p>
 
 			<div class="ggg-calc ggg-reveal">
@@ -432,8 +432,15 @@
 
 				<form class="ggg-form" id="ggg-contact-form" action="https://formspree.io/f/xoeadnyw" method="POST">
 					<input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-					<p class="ggg-form__status ggg-form__status--ok" id="ggg-form-success" hidden>Danke für Ihre Anfrage! Wir melden uns zeitnah bei Ihnen.</p>
-					<p class="ggg-form__status ggg-form__status--error" id="ggg-form-error" hidden>Da ist etwas schiefgelaufen. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt eine E-Mail.</p>
+					<div class="ggg-form__status ggg-form__status--ok" id="ggg-form-success" hidden>
+						<p><strong>Danke für Ihre Anfrage!</strong> So geht es weiter:</p>
+						<ol class="ggg-form__steps">
+							<li>Wir prüfen Ihre Anfrage in der Regel innerhalb eines Werktags.</li>
+							<li>Sie erhalten eine E-Mail mit einem Terminvorschlag für die kostenlose Vor-Ort-Beratung.</li>
+							<li>Danach bekommen Sie ein genaues, unverbindliches Festpreisangebot.</li>
+						</ol>
+					</div>
+					<p class="ggg-form__status ggg-form__status--error" id="ggg-form-error" hidden>Das hat gerade nicht geklappt. Bitte versuchen Sie es gleich nochmal oder schreiben Sie uns direkt eine E-Mail.</p>
 
 					<div class="ggg-form__row">
 						<label>Vorname *<input type="text" name="Vorname" required></label>
