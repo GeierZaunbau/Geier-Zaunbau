@@ -226,13 +226,10 @@ document.addEventListener('DOMContentLoaded', function () {
 			lines.push('Anmerkungen: ' + notizField.value.trim());
 		}
 
-		var nachrichtField = document.querySelector('#kontakt textarea[name="Nachricht"]');
-		var leistungSelect = document.querySelector('#kontakt select[name="Leistung"]');
-		if (nachrichtField) nachrichtField.value = lines.join('\n');
-		if (leistungSelect) leistungSelect.value = 'Zaunbau/Gartenservice';
-
-		var kontaktSection = document.getElementById('kontakt');
-		if (kontaktSection) kontaktSection.scrollIntoView({ behavior: 'smooth' });
+		// Seite ist jetzt eine eigene Unterseite (nicht mehr Teil der Startseite),
+		// daher übergeben wir die Daten per sessionStorage an die Kontaktseite.
+		sessionStorage.setItem('ggg-rechner-anfrage', lines.join('\n'));
+		window.location.href = '/kontakt/';
 	});
 
 	fetchPrice();
