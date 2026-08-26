@@ -62,7 +62,18 @@ function round50(value) {
 
 export async function onRequestPost(context) {
 	try {
+		const contentType = context.request.headers.get('content-type') || '';
+		if (!contentType.toLowerCase().includes('application/json')) {
+			return json({ error: 'Ungültiger Inhaltstyp' }, 415);
+		}
+		const contentLength = Number(context.request.headers.get('content-length') || 0);
+		if (contentLength > 12000) return json({ error: 'Anfrage zu groß' }, 413);
 		const body = await context.request.json();
+		if (!body || typeof body !== 'object' || Array.isArray(body)) return json({ error: 'Ungültige Anfrage' }, 400);
+		const allowedKeys = new Set(['zauntyp','laenge','hoehe','hoeheBeton','ausfuehrung','streichservice','pfostenabstand','fundamentArt','tore','gelaende','demontage','entsorgung','entfernungKm']);
+		for (const key of Object.keys(body)) {
+			if (!allowedKeys.has(key)) return json({ error: 'Ungültiger Parameter' }, 400);
+		}
 
 		const zauntyp = body.zauntyp;
 		const laenge = clamp(Number(body.laenge) || 0, 1, 500);
@@ -71,13 +82,16 @@ export async function onRequestPost(context) {
 		const entsorgung = demontage && !!body.entsorgung;
 		const entfernungKm = clamp(Number(body.entfernungKm) || 0, 0, 200);
 
-		const toreListe = Array.isArray(body.tore) ? body.tore : [];
+		const toreListe = Array.isArray(body.tore) ? [...new Set(body.tore)].slice(0, 4) : [];
+		const allowedTore = new Set(Object.keys(TOR_PREISE));
+		if (toreListe.some(key => typeof key !== 'string' || !allowedTore.has(key))) return json({ error: 'Ungültige Torauswahl' }, 400);
 		const torPreis = toreListe.reduce(function (summe, key) {
 			return summe + (TOR_PREISE[key] || 0);
 		}, 0);
 
 		const anfahrt = ANFAHRT_PAUSCHALE + entfernungKm * ANFAHRT_PRO_KM;
-		const gFaktor = GELAENDE_FAKTOR[gelaende] || 1.0;
+		if (!Object.prototype.hasOwnProperty.call(GELAENDE_FAKTOR, gelaende)) return json({ error: 'Ungültige Geländewahl' }, 400);
+		const gFaktor = GELAENDE_FAKTOR[gelaende];
 
 		let demontageMin = 0;
 		let demontageMax = 0;
@@ -94,7 +108,8 @@ export async function onRequestPost(context) {
 
 		// --- Betonzaun: eigener Rechenweg, da Meterpreis bereits alles enthält ---
 		if (zauntyp === 'beton') {
-			const ausfuehrung = body.ausfuehrung === 'beidseitig' ? 'beidseitig' : 'einseitig';
+			const ausfuehrung = body.ausfuehrung === 'beidseitig' ? 'beidseitig' : body.ausfuehrung === 'einseitig' ? 'einseitig' : null;
+			if (!ausfuehrung) return json({ error: 'Ungültige Ausführung' }, 400);
 			const hoeheKey = Number(body.hoehe) >= 240 ? 'm240' : 'bis2m';
 			const meterpreis = BETONZAUN_RATES[ausfuehrung][hoeheKey];
 
@@ -110,22 +125,17 @@ export async function onRequestPost(context) {
 			let totalMax = round50(gesamt * (1 + BETONZAUN_PUFFER));
 			if (totalMax <= totalMin) totalMax = totalMin + 100;
 
-			return new Response(
-				JSON.stringify({ preisVon: totalMin, preisBis: totalMax, pfostenAnzahl: null }),
-				{ headers: { 'Content-Type': 'application/json' } }
-			);
+			return json({ preisVon: totalMin, preisBis: totalMax, pfostenAnzahl: null });
 		}
 
 		// --- Alle anderen Zauntypen: Montage + separates Fundament ---
 		if (!MONTAGE_RATES[zauntyp]) {
-			return new Response(JSON.stringify({ error: 'Unbekannter Zauntyp' }), {
-				status: 400,
-				headers: { 'Content-Type': 'application/json' },
-			});
+			return json({ error: 'Unbekannter Zauntyp' }, 400);
 		}
 
 		const hoehe = clamp(Number(body.hoehe) || 120, 60, 250);
 		const fundamentArt = body.fundamentArt || 'beton';
+		if (!['beton', 'duebeln', 'einrammen'].includes(fundamentArt)) return json({ error: 'Ungültige Befestigung' }, 400);
 
 		const montageRate = MONTAGE_RATES[zauntyp];
 		let montageMin = laenge * montageRate.min;
@@ -165,14 +175,15 @@ export async function onRequestPost(context) {
 			totalMax = totalMin + 100;
 		}
 
-		return new Response(
-			JSON.stringify({ preisVon: totalMin, preisBis: totalMax, pfostenAnzahl }),
-			{ headers: { 'Content-Type': 'application/json' } }
-		);
+		return json({ preisVon: totalMin, preisBis: totalMax, pfostenAnzahl });
 	} catch (err) {
-		return new Response(JSON.stringify({ error: 'Berechnung fehlgeschlagen' }), {
-			status: 500,
-			headers: { 'Content-Type': 'application/json' },
-		});
+		return json({ error: 'Berechnung fehlgeschlagen' }, 500);
 	}
+}
+
+function json(data, status = 200) {
+	return new Response(JSON.stringify(data), {
+		status,
+		headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
+	});
 }

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Montagerechner | Geier Grund & Grenze</title><meta name="description" content="Unverbindliche Kostenspanne für Zaunmaterial und Montage in Birkenfeld und Umgebung.">
+<meta name="robots" content="index,follow"><link rel="canonical" href="https://geier-zaunbau.de/montagerechner/">
+<meta property="og:type" content="website"><meta property="og:title" content="Montagerechner | Geier Grund & Grenze"><meta property="og:description" content="Unverbindliche Kostenspanne für Zaunmaterial und Montage in Birkenfeld und Umgebung.">
+<link rel="stylesheet" href="/assets/site.css">
+</head><body>
+<header class="site-header"><div class="wrap nav">
+<a class="brand" href="/"><span class="brand-mark">G&G</span><span><strong>Geier Grund & Grenze</strong><small>Zaunbau & Grundstückslösungen</small></span></a>
+<nav class="nav-links"><a href="/#leistungen">Leistungen</a><a href="/montagerechner/">Montagerechner</a><a href="/projekte/">Projekte</a><a href="/ratgeber/">Ratgeber</a><a href="/kontakt/">Kontakt</a></nav>
+<a class="nav-cta primary" href="/kontakt/">Anfrage</a><button class="menu" aria-label="Menü">☰</button>
+</div></header>
+<main><section class="page-hero"><div class="wrap"><p class="eyebrow">Montagerechner</p><h1>Unverbindliche Kostenspanne für dein Zaunprojekt.</h1><p class="lead">Kein Festpreis und keine Scheingenauigkeit: Der Rechner zeigt dir einen realistischen Orientierungsbereich. Die tatsächlichen Materialpreise und der Montageaufwand können schwanken.</p></div></section>
+<section class="section"><div class="wrap calc"><form id="calculator" class="panel">
+<div class="grid2"><div class="field"><label for="type">Zaunart</label><select id="type"><option value="doppelstab">Doppelstabmattenzaun</option><option value="sichtschutz">Sichtschutzzaun</option><option value="wpc">WPC-Zaun</option><option value="holz">Holzzaun</option><option value="maschen">Maschendrahtzaun</option><option value="beton">Betonzaun</option></select></div>
+<div class="field"><label for="length">Zaunlänge in Meter</label><input id="length" type="number" min="1" max="500" step="0.5" value="20"></div></div>
+<div class="grid2"><div class="field"><label for="height">Zaunhöhe</label><select id="height"><option value="1.2">1,20 m</option><option value="1.4">1,40 m</option><option value="1.6">1,60 m</option><option value="1.8">1,80 m</option></select></div>
+<div class="field"><label for="install">Montage</label><select id="install"><option value="ja">Ja, Montage gewünscht</option><option value="nein">Nein, nur Material orientieren</option></select></div></div>
+<div class="grid2"><div class="field"><label for="terrain">Gelände</label><select id="terrain"><option value="eben">Eben / normal</option><option value="hang">Hanglage</option><option value="schwierig">Schwieriger Untergrund</option></select></div>
+<div class="field"><label for="gate">Tor</label><select id="gate"><option value="keins">Kein Tor</option><option value="einfach">Gartentor</option><option value="doppel">Doppelflügeltor</option></select></div></div>
+<div class="field"><label for="extras">Sonstige Zusatzarbeiten / Budgetaufschlag (€)</label><input id="extras" type="number" min="0" max="20000" step="50" value="0"></div>
+<div class="notice">Die Werte sind unverbindliche Richtwerte. Marktpreise, konkrete Produkte, Fundamentierung, Zufahrt, Gelände und weitere Arbeiten können das Ergebnis deutlich verändern.</div>
+</form>
+<aside class="panel result"><span class="tag">Orientierung</span><h2>Deine Kostenspanne</h2><div id="range" class="big">–</div><p class="muted">inkl. der von dir ausgewählten Montageoption, soweit angegeben.</p><div id="detail"></div><a class="button primary" href="/kontakt/">Projekt mit diesen Angaben anfragen</a></aside></div></section>
+<section class="section soft"><div class="wrap prose"><h2>Warum keine exakten Preise?</h2><p>Beton, Zaunmaterial, Zubehör und Transport können sich verändern. Auch ein Meterpreis allein sagt wenig über ein konkretes Grundstück aus. Deshalb ist der Rechner bewusst als Spanne aufgebaut.</p><p>Für dein konkretes Projekt wird anschließend individuell kalkuliert.</p></div></section></main>
+<script>
+const prices={
+  doppelstab:{name:"Doppelstabmattenzaun",material:[29,70],install:[25,45]},
+  sichtschutz:{name:"Sichtschutzzaun",material:[100,200],install:[35,60]},
+  wpc:{name:"WPC-Zaun",material:[120,200],install:[35,60]},
+  holz:{name:"Holzzaun",material:[45,110],install:[30,55]},
+  maschen:{name:"Maschendrahtzaun",material:[10,25],install:[15,30]},
+  beton:{name:"Betonzaun",material:[110,220],install:[40,70]}
+};
+const el=id=>document.getElementById(id);
+const eur=n=>new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n);
+function calc(){
+  const type=el("type").value, len=Math.max(1,Math.min(500,Number(el("length").value)||1));
+  const h=Number(el("height").value)||1.2, install=el("install").value==="ja";
+  const terrain=el("terrain").value, gate=el("gate").value, extras=Number(el("extras").value)||0;
+  const p=prices[type];
+  let material=len*((p.material[0]+p.material[1])/2);
+  let labour=install?len*((p.install[0]+p.install[1])/2):0;
+  let heightFactor=h<=1.2?1:h<=1.6?1.16:1.32;
+  let terrainFactor=terrain==="hang"?1.18:terrain==="schwierig"?1.30:1;
+  let gateCost=gate==="einfach"?250:gate==="doppel"?650:0;
+  let low=(len*(p.material[0]+(install?p.install[0]:0))*heightFactor*terrainFactor)+gateCost+extras;
+  let high=(len*(p.material[1]+(install?p.install[1]:0))*heightFactor*terrainFactor)+gateCost+extras;
+  if(gate==="einfach"){low+=100;high+=250}
+  if(gate==="doppel"){low+=150;high+=350}
+  low=Math.round(low/10)*10; high=Math.round(high/10)*10;
+  el("range").textContent=`${eur(low)} – ${eur(high)}`;
+  el("detail").innerHTML=`<div class="row"><span>Zaunart</span><b>${p.name}</b></div>
+  <div class="row"><span>Zaunlänge</span><b>${len} m</b></div>
+  <div class="row"><span>Montage</span><b>${install?"enthalten":"nicht enthalten"}</b></div>
+  <div class="row"><span>Gelände</span><b>${terrain==="eben"?"eben":terrain==="hang"?"Hang":"erschwert"}</b></div>
+  <div class="row"><span>Tor</span><b>${gate==="keins"?"kein Tor":gate==="einfach"?"Gartentor":"Doppelflügeltor"}</b></div>`;
+}
+document.querySelectorAll("#calculator input,#calculator select").forEach(x=>x.addEventListener("input",calc));
+calc();
+</script>
+<footer><div class="wrap footer-grid"><div><strong>Geier Grund & Grenze</strong><span>Zaunbau & Grundstückslösungen</span></div><nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/kontakt/">Kontakt</a></nav></div></footer>
+</body></html>
