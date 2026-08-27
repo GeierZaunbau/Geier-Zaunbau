@@ -46,6 +46,7 @@ h2{font-size:clamp(32px,4vw,50px);line-height:1.08;letter-spacing:-.04em;margin:
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.step{border-top:2px solid var(--ink);padding-top:17px}.step i{font-style:normal;font-weight:900;color:#69756d}.step b,.step span{display:block}.step span{margin-top:7px;color:#667168;font-size:14px}
 .soft{background:var(--soft)}.contact-box{padding:42px;border-radius:25px;background:var(--soft2);display:flex;align-items:center;justify-content:space-between;gap:30px}
 footer{background:#101711;color:#dce4dd;padding:42px 0}.footer-grid{display:flex;justify-content:space-between;gap:30px}.footer-grid span{display:block;color:#9ca89f;font-size:13px}.footer-grid nav{display:flex;gap:20px}.footer-grid a{text-decoration:none}
+.footer-brand{background:#fff;border-radius:10px;padding:6px 12px;display:inline-flex;align-items:center}
 .page-hero{padding:70px 0;background:var(--soft)}.page-hero h1{font-size:clamp(40px,5vw,64px)}.prose{max-width:820px}.prose p,.prose li{color:#56625a}.prose h2{font-size:34px;margin-top:44px}
 .prose a,.muted a{color:var(--accent);transition:color .15s ease;}
 .prose a:hover,.muted a:hover{color:var(--ink);}
@@ -130,9 +131,9 @@ table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(-
 /* ============================================
    Logo im Header (dunkler Hintergrund für Lesbarkeit)
    ============================================ */
-.brand-logo { background: #182218; border-radius: 13px; padding: 5px 14px; display: flex; align-items: center; height: 72px; }
+.brand-logo { display: flex; align-items: center; height: 72px; }
 .brand-logo img { height: 100%; width: auto; display: block; }
-@media (max-width: 600px) { .brand-logo { height: 56px; padding: 4px 10px; } }
+@media (max-width: 600px) { .brand-logo { height: 56px; } }
 
 /* ============================================
    Projektkarten mit echten Fotos
