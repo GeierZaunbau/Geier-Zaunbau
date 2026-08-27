@@ -28,7 +28,7 @@
 	<div class="project-body"><h3>Sichtschutzzaun aus WPC</h3><p>Blickdichter Sichtschutzzaun aus wetterbeständigem WPC-Material auf Betonsockel, hier während der Montage in Birkenfeld.</p></div>
 </article>
 </div></div></section></main>
-<footer><div class="wrap footer-grid"><div class="footer-brand"><img src="/assets/images/logo.png" alt="Geier Grund & Grenze" style="height:56px;width:auto;filter:brightness(0) invert(1);opacity:0.92;"></div><nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/kontakt/">Kontakt</a></nav></div></footer>
+<footer><div class="wrap footer-grid"><div class="footer-brand"><img src="/assets/images/logo.png" alt="Geier Grund & Grenze" style="height:44px;width:auto;"></div><nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/kontakt/">Kontakt</a></nav></div></footer>
 <div class="ggg-lightbox" id="ggg-lightbox" hidden>
 	<button type="button" class="ggg-lightbox__close" id="ggg-lightbox-close" aria-label="Schließen">✕</button>
 	<img class="ggg-lightbox__img" id="ggg-lightbox-img" src="" alt="">
@@ -43,5 +43,19 @@
 	});
 	lightbox.addEventListener('click', function () { lightbox.hidden = true; lightboxImg.src = ''; });
 	document.getElementById('ggg-lightbox-close').addEventListener('click', function (e) { e.stopPropagation(); lightbox.hidden = true; lightboxImg.src = ''; });
+</script>
+<script>
+(function(){
+	var menuBtn = document.querySelector('.menu');
+	var navLinks = document.querySelector('.nav-links');
+	if (menuBtn && navLinks) {
+		menuBtn.addEventListener('click', function () {
+			navLinks.classList.toggle('is-open');
+		});
+		navLinks.querySelectorAll('a').forEach(function (a) {
+			a.addEventListener('click', function () { navLinks.classList.remove('is-open'); });
+		});
+	}
+})();
 </script>
 </body></html>

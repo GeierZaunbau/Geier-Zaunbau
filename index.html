@@ -45,7 +45,7 @@
 <div class="estimate"><span>Beispielhafte Orientierung</span><strong>2.400 – 3.100 €</strong><small>kein verbindliches Angebot</small></div></div></section>
 
 <section class="section"><div class="wrap"><div class="section-head"><p class="eyebrow">Ablauf</p><h2>Von der Idee bis zum fertigen Zaun.</h2></div>
-<div class="steps"><div class="step"><i>01</i><b>Anfrage</b><span>Sie beschreiben Ihr Vorhaben und können Bilder oder Maße mitsenden.</span></div>
+<div class="steps"><div class="step"><i>01</i><b>Anfrage</b><span>Sie beschreiben Ihr Vorhaben und können Maße und Wünsche mitschicken.</span></div>
 <div class="step"><i>02</i><b>Planung</b><span>Wir klären Zaunart, Maße, Gelände und Zusatzarbeiten.</span></div>
 <div class="step"><i>03</i><b>Angebot</b><span>Sie erhalten eine individuelle Kalkulation für Ihr konkretes Projekt.</span></div>
 <div class="step"><i>04</i><b>Montage</b><span>Die geplante Lösung wird fachgerecht umgesetzt.</span></div></div></div></section>
@@ -56,5 +56,19 @@
 
 <section class="section"><div class="wrap contact-box"><div><p class="eyebrow">Projekt starten</p><h2>Sie haben ein Zaunprojekt?</h2><p class="intro">Schicken Sie uns Ihre Eckdaten. Die Anfrage funktioniert bewusst per E-Mail, ohne private Telefonnummer öffentlich auf der Website.</p></div><a class="button primary" href="/kontakt/">Unverbindlich anfragen</a></div></section>
 </main>
-<footer><div class="wrap footer-grid"><div class="footer-brand"><img src="/assets/images/logo.png" alt="Geier Grund & Grenze" style="height:56px;width:auto;filter:brightness(0) invert(1);opacity:0.92;"></div><nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/kontakt/">Kontakt</a></nav></div></footer>
+<footer><div class="wrap footer-grid"><div class="footer-brand"><img src="/assets/images/logo.png" alt="Geier Grund & Grenze" style="height:44px;width:auto;"></div><nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/kontakt/">Kontakt</a></nav></div></footer>
+<script>
+(function(){
+	var menuBtn = document.querySelector('.menu');
+	var navLinks = document.querySelector('.nav-links');
+	if (menuBtn && navLinks) {
+		menuBtn.addEventListener('click', function () {
+			navLinks.classList.toggle('is-open');
+		});
+		navLinks.querySelectorAll('a').forEach(function (a) {
+			a.addEventListener('click', function () { navLinks.classList.remove('is-open'); });
+		});
+	}
+})();
+</script>
 </body></html>

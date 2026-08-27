@@ -18,5 +18,19 @@
 <p>Idar-Oberstein liegt in einem engen Tal mit teils steilen Hanglagen. Das stellt besondere Anforderungen an die Fundamentwahl, damit der Zaun am Ende statisch überzeugt.</p>
 <h2>So gehen wir vor</h2>
 <p>Nach Ihrer Anfrage vereinbaren wir einen Termin zur kostenlosen Vor-Ort-Beratung und erstellen im Anschluss ein genaues Festpreisangebot.</p><div class="actions"><a class="button primary" href="/montagerechner/">Montagerechner</a><a class="button secondary" href="/kontakt/">Anfrage</a></div></div></section></main>
-<footer><div class="wrap footer-grid"><div class="footer-brand"><img src="/assets/images/logo.png" alt="Geier Grund & Grenze" style="height:56px;width:auto;filter:brightness(0) invert(1);opacity:0.92;"></div><nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/kontakt/">Kontakt</a></nav></div></footer>
+<footer><div class="wrap footer-grid"><div class="footer-brand"><img src="/assets/images/logo.png" alt="Geier Grund & Grenze" style="height:44px;width:auto;"></div><nav><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/kontakt/">Kontakt</a></nav></div></footer>
+<script>
+(function(){
+	var menuBtn = document.querySelector('.menu');
+	var navLinks = document.querySelector('.nav-links');
+	if (menuBtn && navLinks) {
+		menuBtn.addEventListener('click', function () {
+			navLinks.classList.toggle('is-open');
+		});
+		navLinks.querySelectorAll('a').forEach(function (a) {
+			a.addEventListener('click', function () { navLinks.classList.remove('is-open'); });
+		});
+	}
+})();
+</script>
 </body></html>
