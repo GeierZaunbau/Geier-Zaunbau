@@ -47,8 +47,8 @@ h2{font-size:clamp(32px,4vw,50px);line-height:1.08;letter-spacing:-.04em;margin:
 .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.step{border-top:2px solid var(--accent);padding-top:17px}.step i{font-style:normal;font-weight:900;color:var(--moss)}.step b,.step span{display:block}.step span{margin-top:7px;color:var(--muted);font-size:14px}
 .soft{background:var(--soft)}.contact-box{padding:42px;border-radius:25px;background:var(--soft2);display:flex;align-items:center;justify-content:space-between;gap:30px}
 footer{background:#0a120d;color:#c7d4cb;padding:42px 0;border-top:1px solid var(--line)}.footer-grid{display:flex;justify-content:space-between;gap:30px}.footer-grid span{display:block;color:#7f9186;font-size:13px}.footer-grid nav{display:flex;gap:20px}.footer-grid a{text-decoration:none;color:#c7d4cb}
-.footer-brand{background:#fff;border-radius:10px;padding:7px 14px;display:inline-flex;align-items:center;max-width:200px}
-.footer-brand img{height:40px!important;width:auto!important;max-width:172px;display:block}
+.footer-brand{display:inline-flex;align-items:center;max-width:200px}
+.footer-brand img{height:44px!important;width:auto!important;max-width:172px;display:block;filter:drop-shadow(0 0 2px #fff) drop-shadow(0 0 8px rgba(255,255,255,.9)) drop-shadow(0 0 20px rgba(255,255,255,.7));}
 .page-hero{padding:70px 0;background:var(--soft)}.page-hero h1{font-size:clamp(40px,5vw,64px)}.prose{max-width:820px}.prose p,.prose li{color:var(--ink2)}.prose h2{font-size:34px;margin-top:44px;overflow-wrap:break-word;color:var(--ink);}.prose h3{font-size:19px;margin-top:28px;margin-bottom:6px;color:var(--ink);}
 .prose a:not(.button),.muted a:not(.button){color:var(--moss);transition:color .15s ease;}
 .prose a:hover:not(.button),.muted a:hover:not(.button){color:var(--accent);}
@@ -132,9 +132,9 @@ table{width:100%;border-collapse:collapse;background:var(--soft);border:1px soli
 /* ============================================
    Logo im Header (heller Chip für Lesbarkeit auf Dunkel)
    ============================================ */
-.brand-logo { display: flex; align-items: center; height: 84px; background: #fff; border-radius: 13px; padding: 6px 14px; }
-.brand-logo img { height: 100%; width: auto; display: block; }
-@media (max-width: 600px) { .brand-logo { height: 58px; } }
+.brand-logo { display: flex; align-items: center; height: 92px; }
+.brand-logo img { height: 100%; width: auto; display: block; filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 8px rgba(255,255,255,.9)) drop-shadow(0 0 20px rgba(255,255,255,.7)); }
+@media (max-width: 600px) { .brand-logo { height: 64px; } }
 
 /* ============================================
    Projektkarten mit echten Fotos
